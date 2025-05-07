@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changes/create-table-payments.yaml
+  - include:
+      file: db/changelog/changes/create-table-cars.yaml
+  - include:
+      file: db/changelog/changes/create-table-rentals.yaml
+  - include:
+      file: db/changelog/changes/create-table-users.yaml
+
