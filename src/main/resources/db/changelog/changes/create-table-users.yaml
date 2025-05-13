@@ -38,4 +38,8 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
-
+              - column:
+                  name: is_deleted
+                  type: bit
+                  constraints:
+                    nullable: false
