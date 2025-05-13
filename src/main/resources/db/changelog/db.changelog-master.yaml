@@ -7,4 +7,3 @@ databaseChangeLog:
       file: db/changelog/changes/create-table-rentals.yaml
   - include:
       file: db/changelog/changes/create-table-users.yaml
-

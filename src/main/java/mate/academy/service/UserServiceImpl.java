@@ -1,17 +1,20 @@
 package mate.academy.service;
 
 import lombok.RequiredArgsConstructor;
+import mate.academy.dto.UserDto;
 import mate.academy.dto.UserRegistrationRequestDto;
 import mate.academy.dto.UserRegistrationResponseDto;
 import mate.academy.exception.RegistrationException;
 import mate.academy.mapper.UserMapper;
-import mate.academy.model.Role;
+import mate.academy.model.RoleName;
 import mate.academy.model.User;
 import mate.academy.repository.UserRepository;
+import mate.academy.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -34,7 +37,35 @@ class UserServiceImpl implements UserService {
         user.setFirstName(requestDto.getFirstName());
         user.setLastName(requestDto.getLastName());
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        user.setRole(Role.CUSTOMER);
+        user.setRole(RoleName.ROLE_CUSTOMER);
         return userMapper.toUserRegistrationResponseDto(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UserDto updateRole(Long userId, RoleName role) {
+        User user = userRepository.getReferenceById(userId);
+        user.setRole(role);
+        return userMapper.toDto(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UserDto getProfileInfo() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        return userMapper.toDto(userRepository.getReferenceById(userId));
+    }
+
+    @Override
+    @Transactional
+    public UserDto updateProfileInfo(UserDto userDto) {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.getReferenceById(userId);
+        user.setEmail(userDto.getEmail());
+        user.setFirstName(user.getFirstName());
+        user.setLastName(user.getLastName());
+        user.setPassword(user.getPassword());
+        user.setRole(userDto.getRole());
+        return userMapper.toDto(userRepository.save(user));
     }
 }
