@@ -1,4 +1,4 @@
-package mate.academy.dto;
+package mate.academy.dto.user;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

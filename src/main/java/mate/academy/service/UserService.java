@@ -1,8 +1,8 @@
 package mate.academy.service;
 
-import mate.academy.dto.UserDto;
-import mate.academy.dto.UserRegistrationRequestDto;
-import mate.academy.dto.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserDto;
+import mate.academy.dto.user.UserRegistrationRequestDto;
+import mate.academy.dto.user.UserRegistrationResponseDto;
 import mate.academy.model.RoleName;
 
 public interface UserService {

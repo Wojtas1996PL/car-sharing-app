@@ -1,8 +1,8 @@
 package mate.academy.security;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.dto.UserLoginRequestDto;
-import mate.academy.dto.UserLoginResponseDto;
+import mate.academy.dto.user.UserLoginRequestDto;
+import mate.academy.dto.user.UserLoginResponseDto;
 import mate.academy.exception.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

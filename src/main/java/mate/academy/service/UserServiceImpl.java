@@ -1,9 +1,9 @@
 package mate.academy.service;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.dto.UserDto;
-import mate.academy.dto.UserRegistrationRequestDto;
-import mate.academy.dto.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserDto;
+import mate.academy.dto.user.UserRegistrationRequestDto;
+import mate.academy.dto.user.UserRegistrationResponseDto;
 import mate.academy.exception.RegistrationException;
 import mate.academy.mapper.UserMapper;
 import mate.academy.model.RoleName;
@@ -52,15 +52,13 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto getProfileInfo() {
-        Long userId = SecurityUtil.getCurrentUserId();
-        return userMapper.toDto(userRepository.getReferenceById(userId));
+        return userMapper.toDto(userRepository.getReferenceById(SecurityUtil.getCurrentUserId()));
     }
 
     @Override
     @Transactional
     public UserDto updateProfileInfo(UserDto userDto) {
-        Long userId = SecurityUtil.getCurrentUserId();
-        User user = userRepository.getReferenceById(userId);
+        User user = userRepository.getReferenceById(SecurityUtil.getCurrentUserId());
         user.setEmail(userDto.getEmail());
         user.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());
