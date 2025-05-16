@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-users
+      author: mw
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: email
+                  value: "bob@gmail.com"
+              - column:
+                  name: password
+                  value: "$2a$12$9k45AzYMLX3lqw/olTyDreozIDbTMXbkNL82B46OGaxKLPdMY678C"
+              - column:
+                  name: first_name
+                  value: "Bob"
+              - column:
+                  name: last_name
+                  value: "Marley"
+              - column:
+                  name: role
+                  value: "ROLE_CUSTOMER"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: email
+                  value: "mila@gmail.com"
+              - column:
+                  name: password
+                  value: "$2a$12$9k45AzYMLX3lqw/olTyDreozIDbTMXbkNL82B46OGaxKLPdMY678C"
+              - column:
+                  name: first_name
+                  value: "Mila"
+              - column:
+                  name: last_name
+                  value: "Jovovic"
+              - column:
+                  name: role
+                  value: "ROLE_MANAGER"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

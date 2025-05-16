@@ -1,8 +1,8 @@
 package mate.academy.mapper;
 
 import mate.academy.config.MapperConfig;
-import mate.academy.dto.UserDto;
-import mate.academy.dto.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserDto;
+import mate.academy.dto.user.UserRegistrationResponseDto;
 import mate.academy.model.User;
 import org.mapstruct.Mapper;
 

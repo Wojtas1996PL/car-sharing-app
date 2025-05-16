@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-rental-cars
+      author: mw
+      changes:
+        - insert:
+            tableName: rental_cars
+            columns:
+              - column:
+                  name: car_id
+                  value: 1
+              - column:
+                  name: rental_id
+                  value: 1
+        - insert:
+            tableName: rental_cars
+            columns:
+              - column:
+                  name: car_id
+                  value: 2
+              - column:
+                  name: rental_id
+                  value: 2

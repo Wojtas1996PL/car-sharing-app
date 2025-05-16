@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-rentals
+      author: mw
+      changes:
+        - insert:
+            tableName: rentals
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: rental_date
+                  value: "2025-05-10"
+              - column:
+                  name: return_date
+                  value: "2025-05-15"
+              - column:
+                  name: actual_return_date
+                  value: "2025-05-14"
+              - column:
+                  name: is_active
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: rentals
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: rental_date
+                  value: "2025-05-10"
+              - column:
+                  name: return_date
+                  value: "2025-05-18"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

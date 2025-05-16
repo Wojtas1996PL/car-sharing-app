@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-cars
+      author: mw
+      changes:
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: model
+                  value: "M3"
+              - column:
+                  name: brand
+                  value: "BMW"
+              - column:
+                  name: type
+                  value: "SEDAN"
+              - column:
+                  name: inventory
+                  value: 3
+              - column:
+                  name: daily_fee
+                  value: 199.99
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: model
+                  value: "CLS"
+              - column:
+                  name: brand
+                  value: "Mercedes-Benz"
+              - column:
+                  name: type
+                  value: "UNIVERSAL"
+              - column:
+                  name: inventory
+                  value: 20
+              - column:
+                  name: daily_fee
+                  value: 599.99
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
