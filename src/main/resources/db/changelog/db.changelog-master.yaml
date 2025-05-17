@@ -8,14 +8,10 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/create-table-rentals.yaml
   - include:
-      file: db/changelog/changes/create-table-rental-cars.yaml
-  - include:
       file: db/changelog/changes/add-new-users.yaml
   - include:
       file: db/changelog/changes/add-new-cars.yaml
   - include:
       file: db/changelog/changes/add-new-rentals.yaml
-  - include:
-      file: db/changelog/changes/add-new-rental-cars.yaml
   - include:
       file: db/changelog/changes/add-foreign-keys.yaml
