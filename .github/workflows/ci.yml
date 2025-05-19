@@ -16,3 +16,7 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
+      - name: Set up environment variables
+        run: echo "STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}" >> $GITHUB_ENV
+      - name: Verify environment variable
+        run: echo "Stripe API Key is set!"

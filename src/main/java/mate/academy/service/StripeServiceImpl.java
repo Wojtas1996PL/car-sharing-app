@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -21,7 +22,6 @@ import mate.academy.model.Rental;
 import mate.academy.repository.CarRepository;
 import mate.academy.repository.PaymentRepository;
 import mate.academy.repository.RentalRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,12 +33,11 @@ class StripeServiceImpl implements StripeService {
     private final PaymentMapper paymentMapper;
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
-    @Value("${stripe.api.key}")
-    private String apiKey;
 
     @PostConstruct
     public void init() {
-        Stripe.apiKey = apiKey;
+        Dotenv dotenv = Dotenv.load();
+        Stripe.apiKey = dotenv.get("STRIPE_API_KEY");
     }
 
     public PaymentResponseDto createPaymentSession(PaymentRequestDto paymentRequestDto)
