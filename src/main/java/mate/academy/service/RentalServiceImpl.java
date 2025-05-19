@@ -1,9 +1,14 @@
 package mate.academy.service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dto.rental.RentalDto;
 import mate.academy.exception.EntityNotFoundException;
+import mate.academy.exception.InventoryException;
+import mate.academy.exception.RentalReturnedException;
 import mate.academy.mapper.RentalMapper;
 import mate.academy.model.Car;
 import mate.academy.model.Rental;
@@ -22,21 +27,28 @@ class RentalServiceImpl implements RentalService {
     @Transactional
     @Override
     public RentalDto addNewRental(RentalDto rentalDto) {
-        Car car = carRepository.getReferenceById(rentalDto.getCarId());
+        Car car = carRepository.findById(rentalDto.getCarId())
+                .orElseThrow(() -> new EntityNotFoundException("Car not found with id: "
+                        + rentalDto.getCarId()));
+        if (car.getInventory() == 0) {
+            throw new InventoryException("There are no available cars with id: " + car.getId());
+        }
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
+        rentalDto.setActive(true);
         return rentalMapper.toDto(rentalRepository.save(rentalMapper.toModel(rentalDto)));
     }
 
     @Transactional
     @Override
-    public RentalDto getRentalFromUser(Long userId) {
-        return rentalMapper.toDto(
-                rentalRepository.findRentalFromUser(userId)
-                        .orElseThrow(() ->
-                                new EntityNotFoundException("Rental not found for user ID: "
-                                        + userId))
-        );
+    public List<RentalDto> getRentalsFromUser(Long userId, boolean isActive) {
+        if (rentalRepository.findRentalFromUser(userId, isActive).isEmpty()) {
+            throw new EntityNotFoundException("User with id: " + userId + " not found");
+        }
+        return rentalRepository.findRentalFromUser(userId, isActive).stream()
+                .flatMap(Optional::stream)
+                .map(rentalMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -48,10 +60,18 @@ class RentalServiceImpl implements RentalService {
     @Transactional
     @Override
     public RentalDto setRentalReturnDate(Long id, LocalDate returnDate) {
-        Rental rental = rentalRepository.getReferenceById(id);
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found with id: "
+                        + id));
+        if (!rental.isActive()) {
+            throw new RentalReturnedException("Rental with id: " + rental.getId()
+                    + " has already been returned");
+        }
         rental.setActualReturnDate(returnDate);
         rental.setActive(false);
-        Car car = carRepository.getReferenceById(rental.getCarId());
+        Car car = carRepository.findById(rental.getCarId())
+                .orElseThrow(() -> new EntityNotFoundException("Car not found with id: "
+                        + rental.getCarId()));
         car.setInventory(car.getInventory() + 1);
         carRepository.save(car);
         return rentalMapper.toDto(rentalRepository.save(rental));

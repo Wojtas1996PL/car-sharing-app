@@ -1,6 +1,6 @@
 package mate.academy.model;
 
-public enum Status {
+public enum PaymentStatus {
     PENDING,
     PAID
 }

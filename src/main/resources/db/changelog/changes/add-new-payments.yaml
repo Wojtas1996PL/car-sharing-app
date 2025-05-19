@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-payments
+      author: mw
+      changes:
+        - insert:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: rental_id
+                  value: 2
+              - column:
+                  name: status
+                  value: "PAID"
+              - column:
+                  name: type
+                  value: "FINE"
+              - column:
+                  name: session_url
+                  value: "http://session.com"
+              - column:
+                  name: session_id
+                  value: "200"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+
+        - insert:
+            tableName: payments
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: rental_id
+                  value: 1
+              - column:
+                  name: status
+                  value: "PENDING"
+              - column:
+                  name: type
+                  value: "PAYMENT"
+              - column:
+                  name: session_url
+                  value: "http://session.com"
+              - column:
+                  name: session_id
+                  value: "2001"
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

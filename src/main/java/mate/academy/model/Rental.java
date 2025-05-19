@@ -31,7 +31,7 @@ public class Rental {
     @Column(name = "actual_return_date")
     private LocalDate actualReturnDate;
     @Column(name = "is_active", nullable = false, columnDefinition = "BIT")
-    private boolean isActive;
+    private boolean isActive = false;
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BIT")
     private boolean isDeleted = false;
 }

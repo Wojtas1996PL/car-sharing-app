@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mate.academy.dto.user.UserDto;
 import mate.academy.dto.user.UserRegistrationRequestDto;
 import mate.academy.dto.user.UserRegistrationResponseDto;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.exception.RegistrationException;
 import mate.academy.mapper.UserMapper;
 import mate.academy.model.RoleName;
@@ -44,7 +45,8 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto updateRole(Long userId, RoleName role) {
-        User user = userRepository.getReferenceById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new EntityNotFoundException("User not found with id: " + userId));
         user.setRole(role);
         return userMapper.toDto(userRepository.save(user));
     }
@@ -52,13 +54,17 @@ class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto getProfileInfo() {
-        return userMapper.toDto(userRepository.getReferenceById(SecurityUtil.getCurrentUserId()));
+        return userMapper.toDto(userRepository.findById(SecurityUtil.getCurrentUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: "
+                        + SecurityUtil.getCurrentUserId())));
     }
 
     @Override
     @Transactional
     public UserDto updateProfileInfo(UserDto userDto) {
-        User user = userRepository.getReferenceById(SecurityUtil.getCurrentUserId());
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: "
+                        + SecurityUtil.getCurrentUserId()));
         user.setEmail(userDto.getEmail());
         user.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());

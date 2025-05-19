@@ -1,5 +1,6 @@
 package mate.academy.repository;
 
+import java.util.List;
 import java.util.Optional;
 import mate.academy.model.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface RentalRepository extends JpaRepository<Rental, Long>,
         JpaSpecificationExecutor<Rental> {
     @Query(value = "SELECT r FROM Rental r "
-            + "WHERE r.userId =:userId AND r.isActive = true")
-    Optional<Rental> findRentalFromUser(Long userId);
+            + "WHERE r.userId =:userId AND r.isActive =:isActive")
+    List<Optional<Rental>> findRentalFromUser(Long userId, boolean isActive);
 }

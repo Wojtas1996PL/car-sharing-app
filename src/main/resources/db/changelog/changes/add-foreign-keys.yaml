@@ -3,7 +3,7 @@ databaseChangeLog:
       id: add-foreign-keys
       author: mw
       changes:
-        - - addForeignKeyConstraint:
+        - addForeignKeyConstraint:
               baseTableName: rentals
               baseColumnNames: car_id
               referencedTableName: cars
@@ -15,3 +15,9 @@ databaseChangeLog:
               referencedTableName: users
               referencedColumnNames: id
               constraintName: fk_user_rentals
+        - addForeignKeyConstraint:
+            baseTableName: payments
+            baseColumnNames: rental_id
+            referencedTableName: rentals
+            referencedColumnNames: id
+            constraintName: fk_rental_payments

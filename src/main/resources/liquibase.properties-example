@@ -1,3 +1,5 @@
+Copy this into src.main.liquibase.properties file and insert your values.
+
 url=jdbc:mysql://127.0.0.1:3306/car_sharing_app?user=root
 username=root
 password=root
