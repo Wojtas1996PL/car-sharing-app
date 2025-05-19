@@ -36,7 +36,7 @@ class StripeServiceImpl implements StripeService {
 
     @PostConstruct
     public void init() {
-        Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.configure().filename(".env").load();
         Stripe.apiKey = dotenv.get("STRIPE_API_KEY");
     }
 
