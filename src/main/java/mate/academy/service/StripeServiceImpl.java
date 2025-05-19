@@ -37,7 +37,7 @@ class StripeServiceImpl implements StripeService {
     @PostConstruct
     public void init() {
         Dotenv dotenv = Dotenv.load();
-        Stripe.apiKey = dotenv.get("stripe.api.key");
+        Stripe.apiKey = dotenv.get("STRIPE_API_KEY");
     }
 
     public PaymentResponseDto createPaymentSession(PaymentRequestDto paymentRequestDto)
