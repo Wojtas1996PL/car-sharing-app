@@ -3,6 +3,7 @@ package mate.academy.controller;
 import io.swagger.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dto.rental.RentalDto;
 import mate.academy.service.RentalService;
@@ -30,10 +31,11 @@ public class RentalController {
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @Operation(summary = "Get rental information from user")
+    @Operation(summary = "Get list of rentals from user")
     @GetMapping
-    public RentalDto getRentalFromUser(@RequestParam Long userId) {
-        return rentalService.getRentalFromUser(userId);
+    public List<RentalDto> getRentalsFromUser(@RequestParam Long userId,
+                                              @RequestParam boolean isActive) {
+        return rentalService.getRentalsFromUser(userId, isActive);
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")

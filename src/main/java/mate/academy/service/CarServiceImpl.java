@@ -3,6 +3,7 @@ package mate.academy.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.dto.car.CarDto;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.CarMapper;
 import mate.academy.model.Car;
 import mate.academy.repository.CarRepository;
@@ -30,12 +31,14 @@ class CarServiceImpl implements CarService {
 
     @Override
     public CarDto getCarInfo(Long id) {
-        return carMapper.toDto(carRepository.getReferenceById(id));
+        return carMapper.toDto(carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found with id: " + id)));
     }
 
     @Override
     public CarDto updateCar(Long id, CarDto carDto) {
-        Car car = carRepository.getReferenceById(id);
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Car not found with id: " + id));
         car.setBrand(carDto.getBrand());
         car.setType(carDto.getType());
         car.setModel(carDto.getModel());

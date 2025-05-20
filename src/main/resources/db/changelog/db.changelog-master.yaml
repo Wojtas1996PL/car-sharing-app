@@ -14,4 +14,6 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/add-new-rentals.yaml
   - include:
+      file: db/changelog/changes/add-new-payments.yaml
+  - include:
       file: db/changelog/changes/add-foreign-keys.yaml
