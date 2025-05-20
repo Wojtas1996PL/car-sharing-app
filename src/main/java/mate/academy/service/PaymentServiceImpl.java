@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final NotificationService notificationService;
 
     @Override
     public List<PaymentResponseDto> getPaymentsFromUser(Long userId) {
@@ -38,6 +39,8 @@ class PaymentServiceImpl implements PaymentService {
                     new EntityNotFoundException("Payment not found"));
             payment.setStatus(PaymentStatus.PAID);
             paymentRepository.save(payment);
+            String notificationMessage = "Successful payment!";
+            notificationService.sendMessage(notificationMessage);
             return "Payment successful! Your rental is confirmed.";
         }
         return "Payment not completed yet.";
