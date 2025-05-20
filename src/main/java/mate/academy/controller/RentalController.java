@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mate.academy.dto.rental.RentalDto;
+import mate.academy.dto.rental.RentalRequestDto;
+import mate.academy.dto.rental.RentalResponseDto;
 import mate.academy.service.RentalService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,17 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class RentalController {
     private final RentalService rentalService;
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Operation(summary = "Add new rental")
     @PostMapping
-    public RentalDto addNewRental(@RequestBody RentalDto rentalDto) {
-        return rentalService.addNewRental(rentalDto);
+    public RentalResponseDto addNewRental(@RequestBody RentalRequestDto rentalRequestDto) {
+        return rentalService.addNewRental(rentalRequestDto);
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Get list of rentals from user")
     @GetMapping
-    public List<RentalDto> getRentalsFromUser(@RequestParam Long userId,
+    public List<RentalResponseDto> getRentalsFromUser(@RequestParam Long userId,
                                               @RequestParam boolean isActive) {
         return rentalService.getRentalsFromUser(userId, isActive);
     }
@@ -41,14 +42,14 @@ public class RentalController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Get specific rental information")
     @GetMapping("/{id}")
-    public RentalDto getRentalInfo(@PathVariable Long id) {
+    public RentalResponseDto getRentalInfo(@PathVariable Long id) {
         return rentalService.getRentalInfo(id);
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Set actual return date")
     @PostMapping("/return")
-    public RentalDto setRentalReturnDate(@RequestParam Long id,
+    public RentalResponseDto setRentalReturnDate(@RequestParam Long id,
                                          @RequestParam LocalDate returnDate) {
         return rentalService.setRentalReturnDate(id, returnDate);
     }

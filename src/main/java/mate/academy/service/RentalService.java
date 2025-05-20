@@ -2,14 +2,15 @@ package mate.academy.service;
 
 import java.time.LocalDate;
 import java.util.List;
-import mate.academy.dto.rental.RentalDto;
+import mate.academy.dto.rental.RentalRequestDto;
+import mate.academy.dto.rental.RentalResponseDto;
 
 public interface RentalService {
-    RentalDto addNewRental(RentalDto rentalDto);
+    RentalResponseDto addNewRental(RentalRequestDto rentalRequestDto);
 
-    List<RentalDto> getRentalsFromUser(Long userId, boolean isActive);
+    List<RentalResponseDto> getRentalsFromUser(Long userId, boolean isActive);
 
-    RentalDto getRentalInfo(Long id);
+    RentalResponseDto getRentalInfo(Long id);
 
-    RentalDto setRentalReturnDate(Long id, LocalDate returnDate);
+    RentalResponseDto setRentalReturnDate(Long id, LocalDate returnDate);
 }
