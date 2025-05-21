@@ -13,5 +13,5 @@ public interface RentalRepository extends JpaRepository<Rental, Long>,
         JpaSpecificationExecutor<Rental> {
     @Query(value = "SELECT r FROM Rental r "
             + "WHERE r.userId =:userId AND r.isActive =:isActive")
-    List<Optional<Rental>> findRentalFromUser(Long userId, boolean isActive);
+    List<Optional<Rental>> findRentalsFromUser(Long userId, boolean isActive);
 }
