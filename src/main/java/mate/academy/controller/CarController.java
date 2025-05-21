@@ -1,5 +1,6 @@
 package mate.academy.controller;
 
+import io.swagger.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.PermitAll;
 import java.util.List;
@@ -24,18 +25,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
     private final CarService carService;
 
+    @Operation(summary = "Add a new car")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping
     public CarDto addNewCar(@RequestBody CarDto carDto) {
         return carService.addNewCar(carDto);
     }
 
+    @Operation(summary = "Get list of all cars")
     @PermitAll
     @GetMapping
     public List<CarDto> getListOfAllCars() {
         return carService.getListOfAllCars();
     }
 
+    @Operation(summary = "Get information about a car")
     @PermitAll
     @Transactional
     @GetMapping("/{id}")
@@ -43,6 +47,7 @@ public class CarController {
         return carService.getCarInfo(id);
     }
 
+    @Operation(summary = "Update car information")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Transactional
     @PutMapping("/{id}")
@@ -50,6 +55,7 @@ public class CarController {
         return carService.updateCar(id, carDto);
     }
 
+    @Operation(summary = "Delete a car")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/{id}")
     public void deleteCar(@PathVariable Long id) {

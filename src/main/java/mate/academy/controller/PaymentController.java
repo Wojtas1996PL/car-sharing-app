@@ -34,7 +34,7 @@ public class PaymentController {
         return paymentService.getPaymentsFromUser(userId);
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Operation(summary = "Create payment session")
     @PostMapping
     public PaymentResponseDto createPayment(@RequestBody PaymentRequestDto paymentRequestDto)
@@ -42,14 +42,14 @@ public class PaymentController {
         return stripeService.createPaymentSession(paymentRequestDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Operation(summary = "Make successful payment")
     @GetMapping("/success")
     public ResponseEntity<String> success(@RequestParam String sessionId) throws StripeException {
         return ResponseEntity.ok(paymentService.handleSuccess(sessionId));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @Operation(summary = "Cancel payment")
     @GetMapping("/cancel")
     public ResponseEntity<String> cancel(@RequestParam String sessionId) {
