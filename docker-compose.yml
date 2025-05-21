@@ -1,0 +1,30 @@
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  database:
+    image: mysql
+    networks:
+      - my_network
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQLDB_DATABASE
+      MYSQL_USER: $MYSQLDB_USER
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+
+  app:
+    image: posts-service
+    networks:
+      - my_network
+    env_file: ./.env
+    environment:
+      - SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL
+      - SPRING_DATASOURCE_USERNAME=$MYSQLDB_USER
+      - SPRING_DATASOURCE_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+    depends_on:
+      - database
+    ports:
+      - "8081:8080"
