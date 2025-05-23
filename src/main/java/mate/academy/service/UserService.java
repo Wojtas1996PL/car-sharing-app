@@ -1,16 +1,17 @@
 package mate.academy.service;
 
-import mate.academy.dto.user.UserDto;
 import mate.academy.dto.user.UserRegistrationRequestDto;
 import mate.academy.dto.user.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserRequestDto;
+import mate.academy.dto.user.UserResponseDto;
 import mate.academy.model.RoleName;
 
 public interface UserService {
     UserRegistrationResponseDto register(UserRegistrationRequestDto requestDto);
 
-    UserDto updateRole(Long userId, RoleName role);
+    UserResponseDto updateRole(Long userId, RoleName role);
 
-    UserDto getProfileInfo();
+    UserResponseDto getProfileInfo();
 
-    UserDto updateProfileInfo(UserDto userDto);
+    UserResponseDto updateProfileInfo(UserRequestDto userDto);
 }

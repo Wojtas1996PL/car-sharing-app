@@ -6,7 +6,7 @@ import mate.academy.dto.car.CarDto;
 public interface CarService {
     CarDto addNewCar(CarDto carDto);
 
-    List<CarDto> getListOfAllCars();
+    List<CarDto> getAllCars();
 
     CarDto getCarInfo(Long id);
 

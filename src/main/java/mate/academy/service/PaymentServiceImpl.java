@@ -32,22 +32,36 @@ class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String handleSuccess(String sessionId) throws StripeException {
-        Session session = Session.retrieve(sessionId);
-        if ("complete".equals(session.getStatus())) {
-            Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(() ->
-                    new EntityNotFoundException("Payment not found"));
-            payment.setStatus(PaymentStatus.PAID);
-            paymentRepository.save(payment);
-            String notificationMessage = "Successful payment!";
-            notificationService.sendMessage(notificationMessage);
-            return "Payment successful! Your rental is confirmed.";
+    public String handleSuccess(String sessionId) {
+        try {
+            Session session = Session.retrieve(sessionId);
+            if ("complete".equals(session.getStatus())) {
+                Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(() ->
+                        new EntityNotFoundException("Payment not found"));
+                if (payment.getStatus() == PaymentStatus.PAID) {
+                    return "Payment has already been processed.";
+                }
+                payment.setStatus(PaymentStatus.PAID);
+                paymentRepository.save(payment);
+                String notificationMessage = "Successful payment!";
+                notificationService.sendMessage(notificationMessage);
+                return "Payment successful! Your rental is confirmed.";
+            }
+            return "Payment not completed yet.";
+        } catch (StripeException e) {
+            return "Payment processing encountered an error.";
         }
-        return "Payment not completed yet.";
     }
 
     @Override
     public String handleCancel(String sessionId) {
-        return "Payment was cancelled, you can retry within 24 hours";
+        Payment payment = paymentRepository.findBySessionId(sessionId).orElseThrow(() ->
+                new EntityNotFoundException("Payment not found"));
+        if (payment.getStatus() == PaymentStatus.PENDING) {
+            String notificationMessage = "Payment was cancelled. You may retry within 24 hours.";
+            notificationService.sendMessage(notificationMessage);
+            return notificationMessage;
+        }
+        return "Payment has already been processed and cannot be cancelled.";
     }
 }

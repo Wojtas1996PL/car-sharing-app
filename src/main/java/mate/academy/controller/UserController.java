@@ -3,7 +3,8 @@ package mate.academy.controller;
 import io.swagger.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import mate.academy.dto.user.UserDto;
+import mate.academy.dto.user.UserRequestDto;
+import mate.academy.dto.user.UserResponseDto;
 import mate.academy.model.RoleName;
 import mate.academy.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,21 +26,22 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Update user role")
     @PutMapping("/{id}/role")
-    public UserDto updateRole(@PathVariable("id") Long userId, @RequestParam RoleName role) {
+    public UserResponseDto updateRole(@PathVariable("id") Long userId,
+                                      @RequestParam RoleName role) {
         return userService.updateRole(userId, role);
     }
 
-    @Operation(summary = "Get user profile info")
+    @Operation(summary = "Get user profile information")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/me")
-    public UserDto getProfileInfo() {
+    public UserResponseDto getProfileInfo() {
         return userService.getProfileInfo();
     }
 
-    @Operation(summary = "Update user profile info")
+    @Operation(summary = "Update user profile information")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PutMapping("/me")
-    public UserDto updateProfileInfo(@RequestBody UserDto userDto) {
-        return userService.updateProfileInfo(userDto);
+    public UserResponseDto updateProfileInfo(@RequestBody UserRequestDto userRequestDto) {
+        return userService.updateProfileInfo(userRequestDto);
     }
 }

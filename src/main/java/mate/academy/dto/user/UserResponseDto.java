@@ -6,7 +6,7 @@ import lombok.Data;
 import mate.academy.model.RoleName;
 
 @Data
-public class UserDto {
+public class UserResponseDto {
     private Long id;
     private String email;
     private String firstName;
