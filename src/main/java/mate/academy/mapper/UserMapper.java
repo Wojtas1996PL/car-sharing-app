@@ -1,8 +1,8 @@
 package mate.academy.mapper;
 
 import mate.academy.config.MapperConfig;
-import mate.academy.dto.user.UserDto;
 import mate.academy.dto.user.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserResponseDto;
 import mate.academy.model.User;
 import org.mapstruct.Mapper;
 
@@ -10,5 +10,5 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     UserRegistrationResponseDto toUserRegistrationResponseDto(User user);
 
-    UserDto toDto(User user);
+    UserResponseDto toUserResponseDto(User user);
 }

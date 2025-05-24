@@ -1,9 +1,10 @@
 package mate.academy.service;
 
 import lombok.RequiredArgsConstructor;
-import mate.academy.dto.user.UserDto;
 import mate.academy.dto.user.UserRegistrationRequestDto;
 import mate.academy.dto.user.UserRegistrationResponseDto;
+import mate.academy.dto.user.UserRequestDto;
+import mate.academy.dto.user.UserResponseDto;
 import mate.academy.exception.EntityNotFoundException;
 import mate.academy.exception.RegistrationException;
 import mate.academy.mapper.UserMapper;
@@ -44,32 +45,30 @@ class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateRole(Long userId, RoleName role) {
+    public UserResponseDto updateRole(Long userId, RoleName role) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new EntityNotFoundException("User not found with id: " + userId));
         user.setRole(role);
-        return userMapper.toDto(userRepository.save(user));
+        return userMapper.toUserResponseDto(userRepository.save(user));
     }
 
     @Override
     @Transactional
-    public UserDto getProfileInfo() {
-        return userMapper.toDto(userRepository.findById(SecurityUtil.getCurrentUserId())
+    public UserResponseDto getProfileInfo() {
+        return userMapper.toUserResponseDto(userRepository.findById(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: "
                         + SecurityUtil.getCurrentUserId())));
     }
 
     @Override
     @Transactional
-    public UserDto updateProfileInfo(UserDto userDto) {
+    public UserResponseDto updateProfileInfo(UserRequestDto userRequestDto) {
         User user = userRepository.findById(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: "
                         + SecurityUtil.getCurrentUserId()));
-        user.setEmail(userDto.getEmail());
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setPassword(user.getPassword());
-        user.setRole(userDto.getRole());
-        return userMapper.toDto(userRepository.save(user));
+        user.setEmail(userRequestDto.getEmail());
+        user.setFirstName(userRequestDto.getFirstName());
+        user.setLastName(userRequestDto.getLastName());
+        return userMapper.toUserResponseDto(userRepository.save(user));
     }
 }

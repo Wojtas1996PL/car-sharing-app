@@ -38,14 +38,17 @@ class RentalServiceImpl implements RentalService {
         }
         car.setInventory(car.getInventory() - 1);
         carRepository.save(car);
-        RentalResponseDto rentalResponseDto = rentalMapper.toResponseDto(rentalRequestDto);
-        rentalResponseDto.setUserId(SecurityUtil.getCurrentUserId());
-        rentalResponseDto.setActive(true);
+        Rental rental = new Rental();
+        rental.setUserId(SecurityUtil.getCurrentUserId());
+        rental.setCarId(rentalRequestDto.getCarId());
+        rental.setRentalDate(rentalRequestDto.getRentalDate());
+        rental.setReturnDate(rentalRequestDto.getReturnDate());
+        rental.setActive(true);
         String notificationMessage = "New rental created! Car id: " + car.getId()
-                + ". User id: " + rentalResponseDto.getUserId();
+                + ". User id: " + rental.getUserId();
         notificationService.sendMessage(notificationMessage);
         return rentalMapper.toResponseDto(rentalRepository
-                .save(rentalMapper.toModel(rentalResponseDto)));
+                .save(rental));
     }
 
     @Transactional

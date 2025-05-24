@@ -35,8 +35,8 @@ public class CarController {
     @Operation(summary = "Get list of all cars")
     @PermitAll
     @GetMapping
-    public List<CarDto> getListOfAllCars() {
-        return carService.getListOfAllCars();
+    public List<CarDto> getAllCars() {
+        return carService.getAllCars();
     }
 
     @Operation(summary = "Get information about a car")

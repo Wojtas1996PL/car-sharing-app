@@ -21,7 +21,7 @@ class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDto> getListOfAllCars() {
+    public List<CarDto> getAllCars() {
         return carRepository
                 .findAll()
                 .stream()
