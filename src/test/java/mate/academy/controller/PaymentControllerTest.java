@@ -9,13 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.Stripe;
+import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
-
-import com.stripe.Stripe;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.SneakyThrows;
 import mate.academy.dto.payment.PaymentRequestDto;
 import mate.academy.dto.payment.PaymentResponseDto;
