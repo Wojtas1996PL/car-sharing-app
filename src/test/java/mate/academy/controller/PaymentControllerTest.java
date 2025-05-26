@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe;
-import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -44,10 +44,12 @@ public class PaymentControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Value("${stripe.apiKey}")
+    private String stripeApiKey;
+
     @BeforeEach
     public void setup() {
-        Dotenv dotenv = Dotenv.configure().filename(".env").load();
-        Stripe.apiKey = dotenv.get("STRIPE_API_KEY");
+        Stripe.apiKey = stripeApiKey;
     }
 
     @BeforeAll
