@@ -11,8 +11,10 @@ import mate.academy.exception.LoginException;
 import mate.academy.exception.RegistrationException;
 import mate.academy.security.AuthenticationService;
 import mate.academy.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Authentication management")
@@ -22,6 +24,7 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Register user")
     @PostMapping("/register")
     public UserRegistrationResponseDto register(@RequestBody UserRegistrationRequestDto requestDto)
@@ -29,6 +32,7 @@ public class AuthenticationController {
         return userService.register(requestDto);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Login user")
     @PostMapping("/login")
     public UserLoginResponseDto login(@RequestBody UserLoginRequestDto loginRequestDto)

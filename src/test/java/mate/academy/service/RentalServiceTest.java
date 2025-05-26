@@ -1,6 +1,7 @@
 package mate.academy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mockStatic;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import mate.academy.dto.rental.RentalRequestDto;
 import mate.academy.dto.rental.RentalResponseDto;
+import mate.academy.exception.InventoryException;
+import mate.academy.exception.RentalReturnedException;
 import mate.academy.mapper.RentalMapper;
 import mate.academy.model.Car;
 import mate.academy.model.CarType;
@@ -36,11 +39,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class RentalServiceTest {
     private static Car car;
+    private static Car emptyCar;
     private static Rental rental1;
     private static Rental rental2;
     private static Rental rental3;
+    private static Rental rentalNotActive;
     private static User user;
     private static RentalRequestDto rentalRequestDto;
+    private static RentalRequestDto rentalRequestDtoEmptyCar;
     private static RentalResponseDto rentalResponseDto1;
     private static RentalResponseDto rentalResponseDto2;
     private static RentalResponseDto rentalResponseDto3;
@@ -65,6 +71,14 @@ public class RentalServiceTest {
         car.setType(CarType.SUV);
         car.setInventory(10);
         car.setDailyFee(BigDecimal.valueOf(20.99));
+
+        emptyCar = new Car();
+        emptyCar.setId(2L);
+        emptyCar.setBrand("BMW");
+        emptyCar.setModel("X3");
+        emptyCar.setType(CarType.SUV);
+        emptyCar.setInventory(0);
+        emptyCar.setDailyFee(BigDecimal.valueOf(20.99));
 
         user = new User();
         user.setId(1L);
@@ -98,10 +112,24 @@ public class RentalServiceTest {
         rental3.setReturnDate(LocalDate.of(2025,2,8));
         rental3.setActive(true);
 
+        rentalNotActive = new Rental();
+        rentalNotActive.setId(4L);
+        rentalNotActive.setUserId(1L);
+        rentalNotActive.setCarId(1L);
+        rentalNotActive.setRentalDate(LocalDate.of(2025,4,7));
+        rentalNotActive.setReturnDate(LocalDate.of(2025,2,8));
+        rentalNotActive.setActualReturnDate(LocalDate.of(2025, 2, 7));
+        rentalNotActive.setActive(false);
+
         rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025,5,7));
         rentalRequestDto.setReturnDate(LocalDate.of(2025,5,8));
+
+        rentalRequestDtoEmptyCar = new RentalRequestDto();
+        rentalRequestDtoEmptyCar.setCarId(2L);
+        rentalRequestDtoEmptyCar.setRentalDate(LocalDate.of(2025,5,7));
+        rentalRequestDtoEmptyCar.setReturnDate(LocalDate.of(2025,5,8));
 
         rentalResponseDto1 = new RentalResponseDto();
         rentalResponseDto1.setId(1L);
@@ -159,6 +187,15 @@ public class RentalServiceTest {
     }
 
     @Test
+    @DisplayName("Verify that method add new rental throws InventoryException")
+    public void addNewRental_RentalRequestDtoWithCarInventoryZero_ThrowsInventoryException() {
+        when(carRepository.findById(emptyCar.getId())).thenReturn(Optional.of(emptyCar));
+
+        assertThrows(InventoryException.class, () -> rentalService
+                .addNewRental(rentalRequestDtoEmptyCar));
+    }
+
+    @Test
     @DisplayName("Verify that method getRentalsFromUser works")
     public void getRentalsFromUser_ActiveRentals_ReturnsRentalResponseDtoList() {
         List<RentalResponseDto> expectedRentalDtoList = new ArrayList<>();
@@ -213,5 +250,14 @@ public class RentalServiceTest {
         verify(carRepository, times(1)).save(car);
         verify(rentalRepository, times(1)).save(rental3);
         verify(rentalMapper, times(1)).toResponseDto(rental3);
+    }
+
+    @Test
+    @DisplayName("Verify that method setActualReturnDate throws RentalReturnedException")
+    public void addNewRental_RentalAlreadyReturned_ThrowsRentalReturnedException() {
+        when(rentalRepository.findById(4L)).thenReturn(Optional.of(rentalNotActive));
+
+        assertThrows(RentalReturnedException.class, () -> rentalService
+                .setRentalReturnDate(4L, LocalDate.of(2025, 2, 8)));
     }
 }

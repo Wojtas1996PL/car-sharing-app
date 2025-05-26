@@ -1,6 +1,7 @@
 package mate.academy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.dto.payment.PaymentResponseDto;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.PaymentMapper;
 import mate.academy.model.Payment;
 import mate.academy.model.PaymentStatus;
@@ -114,7 +116,7 @@ public class PaymentServiceTest {
 
     @Test
     @DisplayName("Verify that method getPaymentsFromUser works")
-    public void getPaymentsFromUser_CorrectPayments_ReturnsPaymentsResponseDtoList() {
+    public void getPaymentsFromUser_CorrectUserId_ReturnsPaymentsResponseDtoList() {
         List<Payment> payments = List.of(payment1, payment2);
         List<PaymentResponseDto> expectedPaymentResponseDto =
                 List.of(paymentResponseDto1, paymentResponseDto2);
@@ -134,8 +136,14 @@ public class PaymentServiceTest {
     }
 
     @Test
+    @DisplayName("Verify that method getPaymentsFromUser throws EntityNotFoundException")
+    public void getPaymentsFromUser_IncorrectId_ThrowsEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> paymentService.getPaymentsFromUser(100L));
+    }
+
+    @Test
     @DisplayName("Verify that method acceptPayment works")
-    public void acceptPayment_CorrectsSessionId_ReturnsString() {
+    public void acceptPayment_CorrectSessionId_ReturnsString() {
         String expectedMessage = "Payment successful! Your rental is confirmed.";
 
         try (MockedStatic<Session> mockedSession = mockStatic(Session.class)) {

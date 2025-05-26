@@ -1,6 +1,7 @@
 package mate.academy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.dto.car.CarDto;
+import mate.academy.exception.EntityNotFoundException;
 import mate.academy.mapper.CarMapper;
 import mate.academy.model.Car;
 import mate.academy.model.CarType;
@@ -134,6 +136,12 @@ public class CarServiceTest {
 
         verify(carRepository, times(1)).findById(car.getId());
         verify(carMapper, times(1)).toDto(car);
+    }
+
+    @Test
+    @DisplayName("Verify that method getCarInfo throws EntityNotFoundException")
+    public void getCar_IncorrectId_ThrowsEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> carService.getCarInfo(100L));
     }
 
     @Test
