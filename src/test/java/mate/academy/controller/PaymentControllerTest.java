@@ -13,6 +13,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import javax.sql.DataSource;
+
+import com.stripe.Stripe;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.SneakyThrows;
 import mate.academy.dto.payment.PaymentRequestDto;
 import mate.academy.dto.payment.PaymentResponseDto;
@@ -20,6 +23,7 @@ import mate.academy.model.PaymentStatus;
 import mate.academy.model.PaymentType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,12 @@ public class PaymentControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    public void setup() {
+        Dotenv dotenv = Dotenv.configure().filename(".env").load();
+        Stripe.apiKey = dotenv.get("STRIPE_API_KEY");
+    }
 
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource,
