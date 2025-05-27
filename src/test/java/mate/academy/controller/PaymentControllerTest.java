@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stripe.Stripe;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -21,11 +20,9 @@ import mate.academy.model.PaymentStatus;
 import mate.academy.model.PaymentType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -43,14 +40,6 @@ public class PaymentControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Value("${stripe.apiKey}")
-    private String stripeApiKey;
-
-    @BeforeEach
-    public void setup() {
-        Stripe.apiKey = stripeApiKey;
-    }
 
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource,
