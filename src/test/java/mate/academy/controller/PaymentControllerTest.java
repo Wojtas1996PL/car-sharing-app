@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import com.stripe.Stripe;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -128,11 +129,15 @@ public class PaymentControllerTest {
     @Test
     @DisplayName("Verify that method createPayment works")
     public void createPayment_CorrectPayment_ReturnsPaymentResponseDto() throws Exception {
-        wireMockExtension.stubFor(WireMock.post("/v1/payments")
+        Stripe.overrideApiBase("http://localhost:8080");
+        Stripe.apiKey = "sk_test_mocked_key";
+
+        wireMockExtension.stubFor(WireMock.post("/v1/checkout/sessions")
                 .willReturn(WireMock.aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\"id\": \"payment123\", \"status\": \"succeeded\"}")));
+                        .withBody("{\"id\": \"session_123\", \"status\": \"open\", \"url\": "
+                                + "\"http://localhost:8080/payments/success\"}")));
 
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         paymentRequestDto.setRentalId(3L);
