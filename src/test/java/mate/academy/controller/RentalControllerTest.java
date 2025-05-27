@@ -2,8 +2,6 @@ package mate.academy.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,12 +17,10 @@ import javax.sql.DataSource;
 import lombok.SneakyThrows;
 import mate.academy.dto.rental.RentalRequestDto;
 import mate.academy.dto.rental.RentalResponseDto;
-import mate.academy.service.NotificationService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -44,9 +40,6 @@ public class RentalControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Mock
-    private NotificationService notificationService;
 
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource,
@@ -85,8 +78,6 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Verify that method addRental works")
     public void addRental_CorrectRentalRequestDto_ReturnsRentalResponseDto() throws Exception {
-        doNothing().when(notificationService).sendMessage(anyString());
-
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
