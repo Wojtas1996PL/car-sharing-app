@@ -9,6 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -22,6 +25,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -37,6 +41,11 @@ import org.springframework.web.context.WebApplicationContext;
 public class PaymentControllerTest {
     @Autowired
     protected static MockMvc mockMvc;
+
+    @RegisterExtension
+    private static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
+            .options(WireMockConfiguration.wireMockConfig().port(8080))
+            .build();
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -119,6 +128,12 @@ public class PaymentControllerTest {
     @Test
     @DisplayName("Verify that method createPayment works")
     public void createPayment_CorrectPayment_ReturnsPaymentResponseDto() throws Exception {
+        wireMockExtension.stubFor(WireMock.post("/v1/payments")
+                .willReturn(WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"id\": \"payment123\", \"status\": \"succeeded\"}")));
+
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         paymentRequestDto.setRentalId(3L);
         paymentRequestDto.setType(PaymentType.PAYMENT);
