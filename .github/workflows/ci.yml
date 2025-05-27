@@ -6,9 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      MAVEN_OPTS: "-XX:-OmitStackTraceInFastThrow"
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -23,5 +20,3 @@ jobs:
         run: echo "STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}" >> $GITHUB_ENV
       - name: Verify environment variable
         run: echo "Stripe API Key is set!"
-      - name: Build and Test with Maven (Debug Mode)
-        run: mvn test -X
