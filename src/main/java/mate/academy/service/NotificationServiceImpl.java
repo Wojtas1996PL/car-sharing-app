@@ -1,7 +1,6 @@
 package mate.academy.service;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +17,17 @@ class NotificationServiceImpl implements NotificationService {
     public void sendMessage(String message) {
         String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = new HashMap<>();
-        if (botToken != null && chatId != null) {
-            params = Map.of("chat_id", chatId, "text", message);
-        }
+        Map<String, String> params = Map.of("chat_id", chatId, "text", message);
         restTemplate.postForObject(url, params, String.class);
+    }
+
+    @Override
+    public boolean isBotTokenNull() {
+        return botToken == null;
+    }
+
+    @Override
+    public boolean isChatIdNull() {
+        return chatId == null;
     }
 }
