@@ -31,6 +31,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -100,6 +101,11 @@ public class RentalControllerTest {
                         List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")))
         );
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Authentication: " + authentication);
+        System.out.println("Principal: " + authentication.getPrincipal());
+
+
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
@@ -113,6 +119,13 @@ public class RentalControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(rentalRequestDto);
 
+        System.out.println("User: " + user);
+        System.out.println("Security Context Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+
+        System.out.println("RentalRequestDto: " + rentalRequestDto);
+        System.out.println("Expected RentalResponseDto: " + expectedRentalResponseDto);
+        System.out.println("JSON request: " + jsonRequest);
+
         MvcResult result = mockMvc
                 .perform(post("/rentals")
                         .content(jsonRequest)
@@ -124,6 +137,10 @@ public class RentalControllerTest {
                 .readValue(result.getResponse()
                                 .getContentAsString(),
                         RentalResponseDto.class);
+
+        System.out.println("Response Content: " + result.getResponse().getContentAsString());
+        System.out.println("Actual RentalResponseDto: " + actualRentalResponseDto);
+        System.out.println("User ID in Response: " + actualRentalResponseDto.getUserId());
 
         expectedRentalResponseDto.setId(actualRentalResponseDto.getId());
         expectedRentalResponseDto.setUserId(actualRentalResponseDto.getUserId());
