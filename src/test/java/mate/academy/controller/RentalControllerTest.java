@@ -119,8 +119,8 @@ public class RentalControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(rentalRequestDto);
 
         System.out.println("User: " + user);
-        System.out.println("Security Context Authentication: " +
-                SecurityContextHolder.getContext().getAuthentication());
+        System.out.println("Security Context Authentication: "
+                + SecurityContextHolder.getContext().getAuthentication());
 
         System.out.println("RentalRequestDto: " + rentalRequestDto);
         System.out.println("Expected RentalResponseDto: " + expectedRentalResponseDto);
