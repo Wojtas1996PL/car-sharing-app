@@ -105,7 +105,6 @@ public class RentalControllerTest {
         System.out.println("Authentication: " + authentication);
         System.out.println("Principal: " + authentication.getPrincipal());
 
-
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
@@ -120,7 +119,8 @@ public class RentalControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(rentalRequestDto);
 
         System.out.println("User: " + user);
-        System.out.println("Security Context Authentication: " + SecurityContextHolder.getContext().getAuthentication());
+        System.out.println("Security Context Authentication: " +
+                SecurityContextHolder.getContext().getAuthentication());
 
         System.out.println("RentalRequestDto: " + rentalRequestDto);
         System.out.println("Expected RentalResponseDto: " + expectedRentalResponseDto);
