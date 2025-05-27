@@ -31,6 +31,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -78,6 +81,10 @@ public class RentalControllerTest {
         user.setDeleted(false);
         user.setRole(RoleName.ROLE_CUSTOMER);
         userRepository.save(user);
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(user, null,
+                        List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")))
+        );
     }
 
     @AfterAll
