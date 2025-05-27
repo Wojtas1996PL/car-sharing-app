@@ -17,10 +17,15 @@ import javax.sql.DataSource;
 import lombok.SneakyThrows;
 import mate.academy.dto.rental.RentalRequestDto;
 import mate.academy.dto.rental.RentalResponseDto;
+import mate.academy.model.RoleName;
+import mate.academy.model.User;
+import mate.academy.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -41,6 +46,9 @@ public class RentalControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Mock
+    private UserRepository userRepository;
+
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource,
                           @Autowired WebApplicationContext webApplicationContext)
@@ -58,6 +66,18 @@ public class RentalControllerTest {
             ScriptUtils.executeSqlScript(connection,
                     new ClassPathResource("database/add-four-rentals.sql"));
         }
+    }
+
+    @BeforeEach
+    public void setup() {
+        User user = new User();
+        user.setEmail("bob@gmail.com");
+        user.setPassword("123456789");
+        user.setFirstName("Bob");
+        user.setLastName("Marley");
+        user.setDeleted(false);
+        user.setRole(RoleName.ROLE_CUSTOMER);
+        userRepository.save(user);
     }
 
     @AfterAll
