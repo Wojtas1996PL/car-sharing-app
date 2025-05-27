@@ -114,6 +114,7 @@ public class RentalControllerTest {
         expectedRentalResponseDto.setRentalDate(LocalDate.of(2025, 7, 5));
         expectedRentalResponseDto.setReturnDate(LocalDate.of(2025, 8, 10));
         expectedRentalResponseDto.setCarId(1L);
+        expectedRentalResponseDto.setUserId(1L);
         expectedRentalResponseDto.setActive(true);
 
         String jsonRequest = objectMapper.writeValueAsString(rentalRequestDto);
@@ -143,7 +144,6 @@ public class RentalControllerTest {
         System.out.println("User ID in Response: " + actualRentalResponseDto.getUserId());
 
         expectedRentalResponseDto.setId(actualRentalResponseDto.getId());
-        expectedRentalResponseDto.setUserId(actualRentalResponseDto.getUserId());
 
         assertThat(actualRentalResponseDto).isEqualTo(expectedRentalResponseDto);
         assertNotNull(actualRentalResponseDto);
