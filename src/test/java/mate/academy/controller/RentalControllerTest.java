@@ -22,7 +22,6 @@ import mate.academy.model.User;
 import mate.academy.repository.UserRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -35,7 +34,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -71,22 +69,6 @@ public class RentalControllerTest {
         }
     }
 
-    @BeforeEach
-    public void setup() {
-        User user = new User();
-        user.setEmail("bob@gmail.com");
-        user.setPassword("123456789");
-        user.setFirstName("Bob");
-        user.setLastName("Marley");
-        user.setDeleted(false);
-        user.setRole(RoleName.ROLE_CUSTOMER);
-        userRepository.save(user);
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null,
-                        List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")))
-        );
-    }
-
     @AfterAll
     static void afterAll(@Autowired DataSource dataSource) {
         teardown(dataSource);
@@ -101,10 +83,23 @@ public class RentalControllerTest {
         }
     }
 
-    @WithUserDetails(value = "bob@gmail.com")
     @Test
     @DisplayName("Verify that method addRental works")
     public void addRental_CorrectRentalRequestDto_ReturnsRentalResponseDto() throws Exception {
+        User user = new User();
+        user.setEmail("bob@gmail.com");
+        user.setRole(RoleName.ROLE_CUSTOMER);
+        user.setId(1L);
+        user.setPassword("123456789");
+        user.setFirstName("Bob");
+        user.setLastName("Marley");
+        user.setDeleted(false);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(user, null,
+                        List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")))
+        );
+
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
