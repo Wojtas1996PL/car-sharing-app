@@ -20,4 +20,14 @@ class NotificationServiceImpl implements NotificationService {
         Map<String, String> params = Map.of("chat_id", chatId, "text", message);
         restTemplate.postForObject(url, params, String.class);
     }
+
+    @Override
+    public boolean isBotTokenNull() {
+        return botToken == null;
+    }
+
+    @Override
+    public boolean isChatIdNull() {
+        return chatId == null;
+    }
 }

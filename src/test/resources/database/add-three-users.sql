@@ -1,0 +1,3 @@
+insert into users (id, email, first_name, last_name, password, role, is_deleted) values (1, 'claude@gmail.com', 'Claude', 'Strife', '$2a$12$9k45AzYMLX3lqw/olTyDreozIDbTMXbkNL82B46OGaxKLPdMY678C', 'ROLE_CUSTOMER', false);
+insert into users (id, email, first_name, last_name, password, role, is_deleted) values (2, 'bob@gmail.com', 'Bob', 'Marley', '$2a$12$9k45AzYMLX3lqw/olTyDreozIDbTMXbkNL82B46OGaxKLPdMY678C', 'ROLE_CUSTOMER', false);
+insert into users (id, email, first_name, last_name, password, role, is_deleted) values (3, 'mila@gmail.com', 'Mila', 'Jovovich', '$2a$12$9k45AzYMLX3lqw/olTyDreozIDbTMXbkNL82B46OGaxKLPdMY678C', 'ROLE_CUSTOMER', false);

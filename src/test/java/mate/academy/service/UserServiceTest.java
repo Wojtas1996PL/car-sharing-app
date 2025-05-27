@@ -1,6 +1,7 @@
 package mate.academy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -12,6 +13,8 @@ import mate.academy.dto.user.UserRegistrationRequestDto;
 import mate.academy.dto.user.UserRegistrationResponseDto;
 import mate.academy.dto.user.UserRequestDto;
 import mate.academy.dto.user.UserResponseDto;
+import mate.academy.exception.EntityNotFoundException;
+import mate.academy.exception.RegistrationException;
 import mate.academy.mapper.UserMapper;
 import mate.academy.model.RoleName;
 import mate.academy.model.User;
@@ -148,6 +151,16 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Verify that method register throws RegistrationException")
+    public void register_UserThatAlreadyExist_ThrowsRegistrationException() {
+        when(userRepository.findUserByEmail(userRegistrationRequestDto.getEmail()))
+                .thenReturn(Optional.of(user1));
+
+        assertThrows(RegistrationException.class, () -> userService
+                .register(userRegistrationRequestDto));
+    }
+
+    @Test
     @DisplayName("Verify that method updateRole works")
     public void updateRole_CorrectRole_ReturnsUserDto() {
         when(userRepository.findById(user2.getId())).thenReturn(Optional.of(user2));
@@ -162,6 +175,13 @@ public class UserServiceTest {
         verify(userRepository, times(1)).findById(user2.getId());
         verify(userRepository, times(1)).save(user2);
         verify(userMapper, times(1)).toUserResponseDto(manager);
+    }
+
+    @Test
+    @DisplayName("Verify that method updateRole throws EntityNotFoundException")
+    public void updateRole_IncorrectId_ThrowsEntityNotFoundException() {
+        assertThrows(EntityNotFoundException.class, () -> userService
+                .updateRole(100L, RoleName.ROLE_CUSTOMER));
     }
 
     @Test

@@ -46,7 +46,9 @@ class RentalServiceImpl implements RentalService {
         rental.setActive(true);
         String notificationMessage = "New rental created! Car id: " + car.getId()
                 + ". User id: " + rental.getUserId();
-        notificationService.sendMessage(notificationMessage);
+        if (!notificationService.isChatIdNull() && !notificationService.isBotTokenNull()) {
+            notificationService.sendMessage(notificationMessage);
+        }
         return rentalMapper.toResponseDto(rentalRepository
                 .save(rental));
     }

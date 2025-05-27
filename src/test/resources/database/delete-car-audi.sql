@@ -1,0 +1,1 @@
+delete from cars where brand = 'Audi';
