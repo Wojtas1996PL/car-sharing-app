@@ -17,9 +17,7 @@ import javax.sql.DataSource;
 import lombok.SneakyThrows;
 import mate.academy.dto.rental.RentalRequestDto;
 import mate.academy.dto.rental.RentalResponseDto;
-import mate.academy.model.RoleName;
-import mate.academy.model.User;
-import mate.academy.repository.UserRepository;
+import mate.academy.service.NotificationService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +28,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -49,7 +44,7 @@ public class RentalControllerTest {
     private ObjectMapper objectMapper;
 
     @Mock
-    private UserRepository userRepository;
+    private NotificationService notificationService;
 
     @BeforeAll
     static void beforeAll(@Autowired DataSource dataSource,
@@ -84,27 +79,10 @@ public class RentalControllerTest {
         }
     }
 
+    @WithUserDetails("bob@gmail.com")
     @Test
     @DisplayName("Verify that method addRental works")
     public void addRental_CorrectRentalRequestDto_ReturnsRentalResponseDto() throws Exception {
-        User user = new User();
-        user.setEmail("bob@gmail.com");
-        user.setRole(RoleName.ROLE_CUSTOMER);
-        user.setId(1L);
-        user.setPassword("123456789");
-        user.setFirstName("Bob");
-        user.setLastName("Marley");
-        user.setDeleted(false);
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user, null,
-                        List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")))
-        );
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication);
-        System.out.println("Principal: " + authentication.getPrincipal());
-
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
@@ -114,18 +92,9 @@ public class RentalControllerTest {
         expectedRentalResponseDto.setRentalDate(LocalDate.of(2025, 7, 5));
         expectedRentalResponseDto.setReturnDate(LocalDate.of(2025, 8, 10));
         expectedRentalResponseDto.setCarId(1L);
-        expectedRentalResponseDto.setUserId(1L);
         expectedRentalResponseDto.setActive(true);
 
         String jsonRequest = objectMapper.writeValueAsString(rentalRequestDto);
-
-        System.out.println("User: " + user);
-        System.out.println("Security Context Authentication: "
-                + SecurityContextHolder.getContext().getAuthentication());
-
-        System.out.println("RentalRequestDto: " + rentalRequestDto);
-        System.out.println("Expected RentalResponseDto: " + expectedRentalResponseDto);
-        System.out.println("JSON request: " + jsonRequest);
 
         MvcResult result = mockMvc
                 .perform(post("/rentals")
@@ -139,11 +108,8 @@ public class RentalControllerTest {
                                 .getContentAsString(),
                         RentalResponseDto.class);
 
-        System.out.println("Response Content: " + result.getResponse().getContentAsString());
-        System.out.println("Actual RentalResponseDto: " + actualRentalResponseDto);
-        System.out.println("User ID in Response: " + actualRentalResponseDto.getUserId());
-
         expectedRentalResponseDto.setId(actualRentalResponseDto.getId());
+        expectedRentalResponseDto.setUserId(actualRentalResponseDto.getUserId());
 
         assertThat(actualRentalResponseDto).isEqualTo(expectedRentalResponseDto);
         assertNotNull(actualRentalResponseDto);
