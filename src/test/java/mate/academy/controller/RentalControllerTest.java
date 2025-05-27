@@ -2,6 +2,8 @@ package mate.academy.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -83,6 +85,8 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Verify that method addRental works")
     public void addRental_CorrectRentalRequestDto_ReturnsRentalResponseDto() throws Exception {
+        doNothing().when(notificationService).sendMessage(anyString());
+
         RentalRequestDto rentalRequestDto = new RentalRequestDto();
         rentalRequestDto.setCarId(1L);
         rentalRequestDto.setRentalDate(LocalDate.of(2025, 7, 5));
