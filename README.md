@@ -74,7 +74,7 @@ a notification on Telegram like adding a new rental. They will appear on Telegra
 This app also supports Docker. The configuration is in Dockerfile and docker-compose.yaml. You can also use your credentials stored in .env file.
 It uses port 8081 so remember to change it in Postman if you are running app through Docker.
 If you want to run it, you can use this command in terminal:
-docker run --network my_network -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/book_app -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=password your-image-name
+docker run --network my_network -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/car_sharing_app -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=password your-image-name
 or type in this command which will use your credentials from .env file: docker run --env-file .env -p 8081:8081 your-image-name
 
 Below you can watch a video of me explaining how to use my app:
