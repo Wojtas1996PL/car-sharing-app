@@ -30,7 +30,8 @@ Mockito, SpringBootTest and DataJpaTest to test controller, repository and servi
 
 In order to use car sharing app, you need to install a program for managing endpoints like Postman which I will use to show you how to use my app.
 First of all, go to application.properties file and liquibase.properties and change credentials for user and password to match
-yours in your database. I am using MySql in this project. On your local computer, you should also create database called
+yours in your database. Add all credentials in .env file, you have .env.sample as an example. 
+I am using MySql in this project. On your local computer, you should also create database called
 "car_sharing_app". This will ensure that you will connect with your local database, and allow liquibase to fill it with data.
 After starting application, launch Postman, and type in your http local host address. By default it is: "http://localhost:8080".
 At first, register new user using /register endpoint with @PostMapping.
@@ -75,7 +76,7 @@ This app also supports Docker. The configuration is in Dockerfile and docker-com
 It uses port 8081 so remember to change it in Postman if you are running app through Docker.
 If you want to run it, you can use this command in terminal:
 docker run --network my_network -p 8081:8080 -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/car_sharing_app -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=password your-image-name
-or type in this command which will use your credentials from .env file: docker run --env-file .env -p 8081:8081 your-image-name
+or type in this command which will use your credentials from .env file: docker run --env-file .env -p 8081:8080 your-image-name
 
 Below you can watch a video of me explaining how to use my app:
 https://youtu.be/PPL06Oi-_HE

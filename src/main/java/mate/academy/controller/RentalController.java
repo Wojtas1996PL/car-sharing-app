@@ -34,6 +34,13 @@ public class RentalController {
         return rentalService.addNewRental(rentalRequestDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Get list of rentals")
+    @GetMapping("/myRentals")
+    public List<RentalResponseDto> getRentals(@RequestParam boolean isActive) {
+        return rentalService.getRentals(isActive);
+    }
+
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Get list of rentals from user")
     @GetMapping

@@ -11,6 +11,7 @@ import mate.academy.mapper.PaymentMapper;
 import mate.academy.model.Payment;
 import mate.academy.model.PaymentStatus;
 import mate.academy.repository.PaymentRepository;
+import mate.academy.security.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -19,6 +20,18 @@ class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final NotificationService notificationService;
+
+    @Override
+    public List<PaymentResponseDto> getPayments() {
+        List<Payment> payments = paymentRepository
+                .findPaymentsByUserId(SecurityUtil.getCurrentUserId());
+        if (payments.isEmpty()) {
+            throw new EntityNotFoundException("You have no payments");
+        }
+        return payments.stream()
+                .map(paymentMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public List<PaymentResponseDto> getPaymentsFromUser(Long userId) {

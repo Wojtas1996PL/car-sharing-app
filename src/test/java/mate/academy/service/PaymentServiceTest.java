@@ -26,6 +26,7 @@ import mate.academy.model.Rental;
 import mate.academy.model.RoleName;
 import mate.academy.model.User;
 import mate.academy.repository.PaymentRepository;
+import mate.academy.security.SecurityUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,6 +113,30 @@ public class PaymentServiceTest {
         paymentResponseDto2.setType(PaymentType.PAYMENT);
         paymentResponseDto2.setStatus(PaymentStatus.PENDING);
         paymentResponseDto2.setMoneyToPay(BigDecimal.valueOf(19.99));
+    }
+
+    @Test
+    @DisplayName("Verify that method getPayments works")
+    public void getPayments_CorrectUser_ReturnsPaymentsResponseDtoList() {
+        try (MockedStatic<SecurityUtil> mockedStatic = mockStatic(SecurityUtil.class)) {
+            mockedStatic.when(SecurityUtil::getCurrentUserId).thenReturn(user.getId());
+            List<Payment> payments = List.of(payment1, payment2);
+            List<PaymentResponseDto> expectedPaymentResponseDto =
+                    List.of(paymentResponseDto1, paymentResponseDto2);
+
+            when(paymentRepository.findPaymentsByUserId(user.getId())).thenReturn(payments);
+            when(paymentMapper.toResponseDto(payment1)).thenReturn(paymentResponseDto1);
+            when(paymentMapper.toResponseDto(payment2)).thenReturn(paymentResponseDto2);
+
+            List<PaymentResponseDto> actualPaymentsResponseDto = paymentService
+                    .getPayments();
+
+            assertThat(actualPaymentsResponseDto).isEqualTo(expectedPaymentResponseDto);
+
+            verify(paymentRepository, times(1)).findPaymentsByUserId(user.getId());
+            verify(paymentMapper, times(1)).toResponseDto(payment1);
+            verify(paymentMapper, times(1)).toResponseDto(payment2);
+        }
     }
 
     @Test

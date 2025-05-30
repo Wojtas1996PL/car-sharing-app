@@ -8,6 +8,8 @@ import mate.academy.dto.rental.RentalResponseDto;
 public interface RentalService {
     RentalResponseDto addNewRental(RentalRequestDto rentalRequestDto);
 
+    List<RentalResponseDto> getRentals(boolean isActive);
+
     List<RentalResponseDto> getRentalsFromUser(Long userId, boolean isActive);
 
     RentalResponseDto getRentalInfo(Long id);
