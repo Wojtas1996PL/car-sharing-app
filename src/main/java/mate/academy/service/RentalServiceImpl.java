@@ -55,6 +55,20 @@ class RentalServiceImpl implements RentalService {
 
     @Transactional
     @Override
+    public List<RentalResponseDto> getRentals(boolean isActive) {
+        if (rentalRepository.findRentalsFromUser(SecurityUtil
+                .getCurrentUserId(), isActive).isEmpty()) {
+            throw new EntityNotFoundException("You have no rentals");
+        }
+        return rentalRepository.findRentalsFromUser(SecurityUtil
+                        .getCurrentUserId(), isActive).stream()
+                .flatMap(Optional::stream)
+                .map(rentalMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
     public List<RentalResponseDto> getRentalsFromUser(Long userId, boolean isActive) {
         if (rentalRepository.findRentalsFromUser(userId, isActive).isEmpty()) {
             throw new EntityNotFoundException("User with id: " + userId + " not found");

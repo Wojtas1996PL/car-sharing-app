@@ -3,6 +3,9 @@ package mate.academy.service;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,24 +13,37 @@ import org.springframework.web.client.RestTemplate;
 @Service
 class NotificationServiceImpl implements NotificationService {
     private static final Dotenv DOTENV = Dotenv.configure().filename(".env").load();
-    private final String botToken = DOTENV.get("TELEGRAM_BOT_TOKEN");
-    private final String chatId = DOTENV.get("TELEGRAM_CHAT_ID");
+    private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
+
+    @Bean
+    public String telegramBotToken() {
+        return DOTENV.get("TELEGRAM_BOT_TOKEN");
+    }
+
+    @Bean
+    public String telegramChatId() {
+        return DOTENV.get("TELEGRAM_CHAT_ID");
+    }
 
     @Override
     public void sendMessage(String message) {
-        String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+        if (telegramBotToken() == null || telegramChatId() == null) {
+            log.warn("Missing Telegram credentials. Notification skipped.");
+            return;
+        }
+        String url = "https://api.telegram.org/bot" + telegramBotToken() + "/sendMessage";
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> params = Map.of("chat_id", chatId, "text", message);
+        Map<String, String> params = Map.of("chat_id", telegramChatId(), "text", message);
         restTemplate.postForObject(url, params, String.class);
     }
 
     @Override
     public boolean isBotTokenNull() {
-        return botToken == null;
+        return telegramBotToken() == null;
     }
 
     @Override
     public boolean isChatIdNull() {
-        return chatId == null;
+        return telegramChatId() == null;
     }
 }

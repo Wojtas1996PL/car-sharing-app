@@ -197,6 +197,31 @@ public class RentalServiceTest {
 
     @Test
     @DisplayName("Verify that method getRentalsFromUser works")
+    public void getRentals_ActiveRentals_ReturnsRentalResponseDtoList() {
+        try (MockedStatic<SecurityUtil> mockedStatic = mockStatic(SecurityUtil.class)) {
+            mockedStatic.when(SecurityUtil::getCurrentUserId).thenReturn(user.getId());
+            List<RentalResponseDto> expectedRentalDtoList = new ArrayList<>();
+            expectedRentalDtoList.add(rentalResponseDto1);
+            expectedRentalDtoList.add(rentalResponseDto2);
+            List<Optional<Rental>> rentals = List.of(Optional.of(rental1), Optional.of(rental2));
+
+            when(rentalRepository.findRentalsFromUser(user.getId(), true)).thenReturn(rentals);
+            when(rentalMapper.toResponseDto(rental1)).thenReturn(rentalResponseDto1);
+            when(rentalMapper.toResponseDto(rental2)).thenReturn(rentalResponseDto2);
+
+            List<RentalResponseDto> actualRentalsResponseDto = rentalService
+                    .getRentals(true);
+
+            assertThat(actualRentalsResponseDto).isEqualTo(expectedRentalDtoList);
+
+            verify(rentalRepository, times(2)).findRentalsFromUser(user.getId(), true);
+            verify(rentalMapper, times(1)).toResponseDto(rental1);
+            verify(rentalMapper, times(1)).toResponseDto(rental2);
+        }
+    }
+
+    @Test
+    @DisplayName("Verify that method getRentalsFromUser works")
     public void getRentalsFromUser_ActiveRentals_ReturnsRentalResponseDtoList() {
         List<RentalResponseDto> expectedRentalDtoList = new ArrayList<>();
         expectedRentalDtoList.add(rentalResponseDto1);

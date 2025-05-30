@@ -27,4 +27,4 @@ services:
     depends_on:
       - database
     ports:
-      - "8081:8080"
+      - "$APP_LOCAL_PORT:$APP_DOCKER_PORT

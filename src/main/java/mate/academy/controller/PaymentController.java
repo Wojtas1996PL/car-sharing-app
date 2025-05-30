@@ -29,6 +29,13 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final StripeService stripeService;
 
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Operation(summary = "Get list of payments")
+    @GetMapping("/myPayments")
+    public List<PaymentResponseDto> getPayments() {
+        return paymentService.getPayments();
+    }
+
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Operation(summary = "Get list of payments from user")
     @GetMapping

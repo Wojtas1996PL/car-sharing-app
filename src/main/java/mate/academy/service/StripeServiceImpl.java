@@ -28,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @Service
 class StripeServiceImpl implements StripeService {
+    private static final String BASE_URL = Dotenv.load().get("APP_BASE_URL");
     private static final BigDecimal FINE_MULTIPLIER = BigDecimal.valueOf(1.5);
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
@@ -52,41 +53,14 @@ class StripeServiceImpl implements StripeService {
                 rental.getReturnDate().toEpochDay()
                         - rental.getRentalDate().toEpochDay()));
 
-        if (paymentRequestDto.getType() == PaymentType.FINE && !rental.isActive()) {
+        if (paymentRequestDto.getType() == PaymentType.FINE && rental.isActive()) {
             int overdueDays = Math.max(0, (int) (rental.getActualReturnDate().toEpochDay()
                     - rental.getReturnDate().toEpochDay()));
             rentalPrice = rentalPrice.add(car.getDailyFee()
                     .multiply(BigDecimal.valueOf(overdueDays)).multiply(FINE_MULTIPLIER));
         }
 
-        String successUrl = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/payments/success")
-                .queryParam("session_id", "{CHECKOUT_SESSION_ID}")
-                .toUriString();
-
-        String cancelUrl = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/payments/cancel").toUriString();
-
-        SessionCreateParams params = SessionCreateParams.builder()
-                .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(successUrl)
-                .setCancelUrl(cancelUrl)
-                .addLineItem(
-                        SessionCreateParams.LineItem.builder()
-                                .setQuantity(1L)
-                                .setPriceData(
-                                        SessionCreateParams.LineItem.PriceData.builder()
-                                                .setCurrency("usd")
-                                                .setUnitAmount(1000L)
-                                                .setProductData(
-                                                        SessionCreateParams.LineItem
-                                                                .PriceData.ProductData.builder()
-                                                                .setName("Payment for rental")
-                                                                .build()
-                                                )
-                                                .build()
-                                )
-                                .build()
-                )
-                .build();
+        SessionCreateParams params = createSessionCreateParams(rentalPrice);
 
         Session session = Session.create(params);
 
@@ -102,5 +76,39 @@ class StripeServiceImpl implements StripeService {
         responseDto.setMoneyToPay(rentalPrice);
 
         return responseDto;
+    }
+
+    private SessionCreateParams createSessionCreateParams(BigDecimal rentalPrice) {
+        String successUrl = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/payments/success")
+                .queryParam("session_id", "{CHECKOUT_SESSION_ID}")
+                .toUriString();
+
+        String cancelUrl = UriComponentsBuilder.fromHttpUrl(BASE_URL + "/payments/cancel")
+                .toUriString();
+
+        return SessionCreateParams.builder()
+                .setMode(SessionCreateParams.Mode.PAYMENT)
+                .setSuccessUrl(successUrl)
+                .setCancelUrl(cancelUrl)
+                .addLineItem(
+                        SessionCreateParams.LineItem.builder()
+                                .setQuantity(1L)
+                                .setPriceData(
+                                        SessionCreateParams.LineItem.PriceData.builder()
+                                                .setCurrency("usd")
+                                                .setUnitAmount(rentalPrice
+                                                        .multiply(BigDecimal.valueOf(100))
+                                                        .longValue())
+                                                .setProductData(
+                                                        SessionCreateParams.LineItem
+                                                                .PriceData.ProductData.builder()
+                                                                .setName("Payment for rental")
+                                                                .build()
+                                                )
+                                                .build()
+                                )
+                                .build()
+                )
+                .build();
     }
 }

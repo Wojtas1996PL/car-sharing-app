@@ -33,6 +33,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -68,7 +69,7 @@ public class PaymentControllerTest {
             ScriptUtils.executeSqlScript(connection,
                     new ClassPathResource("database/add-four-rentals.sql"));
             ScriptUtils.executeSqlScript(connection,
-                    new ClassPathResource("database/add-three-payments.sql"));
+                    new ClassPathResource("database/add-four-payments.sql"));
         }
     }
 
@@ -86,9 +87,9 @@ public class PaymentControllerTest {
         }
     }
 
-    @WithMockUser(username = "mila@gmail.com", roles = "MANAGER")
+    @WithUserDetails("claude@gmail.com")
     @Test
-    @DisplayName("Verify that method getPaymentsFromUser works")
+    @DisplayName("Verify that method getPaymentsWorks")
     public void getPayments_CorrectPayments_ReturnsPaymentResponseDtoList() throws Exception {
         PaymentResponseDto paymentResponseDto1 = new PaymentResponseDto();
         paymentResponseDto1.setId(1L);
@@ -106,8 +107,63 @@ public class PaymentControllerTest {
         paymentResponseDto2.setSessionId("sessionId2");
         paymentResponseDto2.setSessionUrl("http://session.com");
 
+        PaymentResponseDto paymentResponseDto3 = new PaymentResponseDto();
+        paymentResponseDto3.setId(4L);
+        paymentResponseDto3.setRentalId(4L);
+        paymentResponseDto3.setStatus(PaymentStatus.PENDING);
+        paymentResponseDto3.setType(PaymentType.PAYMENT);
+        paymentResponseDto3.setSessionId("sessionId4");
+        paymentResponseDto3.setSessionUrl("http://session.com");
+
         List<PaymentResponseDto> expectedPaymentsResponseDto = List
-                .of(paymentResponseDto1, paymentResponseDto2);
+                .of(paymentResponseDto1, paymentResponseDto2, paymentResponseDto3);
+
+        MvcResult result = mockMvc.perform(get("/payments/myPayments")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<PaymentResponseDto> actualPaymentsResponseDto = objectMapper
+                .readValue(result.getResponse()
+                                .getContentAsByteArray(),
+                        new TypeReference<>() {
+                        });
+
+        assertThat(actualPaymentsResponseDto).isEqualTo(expectedPaymentsResponseDto);
+        assertNotNull(actualPaymentsResponseDto);
+    }
+
+    @WithMockUser(username = "mila@gmail.com", roles = "MANAGER")
+    @Test
+    @DisplayName("Verify that method getPaymentsFromUser works")
+    public void getPaymentsFromUser_CorrectPayments_ReturnsPaymentResponseDtoList()
+            throws Exception {
+        PaymentResponseDto paymentResponseDto1 = new PaymentResponseDto();
+        paymentResponseDto1.setId(1L);
+        paymentResponseDto1.setRentalId(1L);
+        paymentResponseDto1.setStatus(PaymentStatus.PAID);
+        paymentResponseDto1.setType(PaymentType.PAYMENT);
+        paymentResponseDto1.setSessionId("sessionId1");
+        paymentResponseDto1.setSessionUrl("http://session.com");
+
+        PaymentResponseDto paymentResponseDto2 = new PaymentResponseDto();
+        paymentResponseDto2.setId(2L);
+        paymentResponseDto2.setRentalId(2L);
+        paymentResponseDto2.setStatus(PaymentStatus.PAID);
+        paymentResponseDto2.setType(PaymentType.PAYMENT);
+        paymentResponseDto2.setSessionId("sessionId2");
+        paymentResponseDto2.setSessionUrl("http://session.com");
+
+        PaymentResponseDto paymentResponseDto3 = new PaymentResponseDto();
+        paymentResponseDto3.setId(4L);
+        paymentResponseDto3.setRentalId(4L);
+        paymentResponseDto3.setStatus(PaymentStatus.PENDING);
+        paymentResponseDto3.setType(PaymentType.PAYMENT);
+        paymentResponseDto3.setSessionId("sessionId4");
+        paymentResponseDto3.setSessionUrl("http://session.com");
+
+        List<PaymentResponseDto> expectedPaymentsResponseDto = List
+                .of(paymentResponseDto1, paymentResponseDto2, paymentResponseDto3);
 
         MvcResult result = mockMvc.perform(get("/payments")
                         .param("userId", "1")

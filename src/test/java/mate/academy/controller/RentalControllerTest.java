@@ -110,10 +110,51 @@ public class RentalControllerTest {
         assertNotNull(actualRentalResponseDto);
     }
 
+    @WithUserDetails("claude@gmail.com")
+    @Test
+    @DisplayName("Verify that method getRentals works")
+    public void getRentals_CorrectRentals_ReturnsRentalResponseDtoList() throws Exception {
+        RentalResponseDto expectedRentalResponseDto1 = new RentalResponseDto();
+        expectedRentalResponseDto1.setId(1L);
+        expectedRentalResponseDto1.setUserId(1L);
+        expectedRentalResponseDto1.setRentalDate(LocalDate.of(2025, 5, 7));
+        expectedRentalResponseDto1.setReturnDate(LocalDate.of(2025, 5, 10));
+        expectedRentalResponseDto1.setActualReturnDate(LocalDate.of(2025, 5, 9));
+        expectedRentalResponseDto1.setCarId(1L);
+        expectedRentalResponseDto1.setActive(false);
+
+        RentalResponseDto expectedRentalResponseDto2 = new RentalResponseDto();
+        expectedRentalResponseDto2.setId(4L);
+        expectedRentalResponseDto2.setUserId(1L);
+        expectedRentalResponseDto2.setRentalDate(LocalDate.of(2025, 5, 8));
+        expectedRentalResponseDto2.setReturnDate(LocalDate.of(2025, 5, 10));
+        expectedRentalResponseDto2.setActualReturnDate(LocalDate.of(2025, 5, 9));
+        expectedRentalResponseDto2.setCarId(1L);
+        expectedRentalResponseDto2.setActive(false);
+
+        List<RentalResponseDto> expectedRentalsResponseDto = List
+                .of(expectedRentalResponseDto1, expectedRentalResponseDto2);
+
+        MvcResult result = mockMvc.perform(get("/rentals/myRentals")
+                        .param("isActive", "false")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        List<RentalResponseDto> actualRentalsResponseDto = objectMapper
+                .readValue(result.getResponse()
+                                .getContentAsByteArray(),
+                        new TypeReference<>() {
+                        });
+
+        assertThat(actualRentalsResponseDto).isEqualTo(expectedRentalsResponseDto);
+        assertNotNull(actualRentalsResponseDto);
+    }
+
     @WithMockUser(username = "mila@gmail.com", roles = "MANAGER")
     @Test
     @DisplayName("Verify that method getRentalsFromUser works")
-    public void getRentals_CorrectRentals_ReturnsRentalResponseDtoList() throws Exception {
+    public void getRentalsFromUser_CorrectRentals_ReturnsRentalResponseDtoList() throws Exception {
         RentalResponseDto expectedRentalResponseDto1 = new RentalResponseDto();
         expectedRentalResponseDto1.setId(1L);
         expectedRentalResponseDto1.setUserId(1L);
@@ -183,17 +224,17 @@ public class RentalControllerTest {
     @DisplayName("Verify that method setActualReturnDate works")
     public void setActualReturnDate_CorrectDate_ReturnsRentalResponseDto() throws Exception {
         RentalResponseDto expectedRentalResponseDto = new RentalResponseDto();
-        expectedRentalResponseDto.setId(2L);
-        expectedRentalResponseDto.setUserId(1L);
-        expectedRentalResponseDto.setRentalDate(LocalDate.of(2025, 5, 6));
-        expectedRentalResponseDto.setReturnDate(LocalDate.of(2025, 5, 15));
+        expectedRentalResponseDto.setId(3L);
+        expectedRentalResponseDto.setUserId(3L);
+        expectedRentalResponseDto.setRentalDate(LocalDate.of(2025, 5, 3));
+        expectedRentalResponseDto.setReturnDate(LocalDate.of(2025, 5, 29));
         expectedRentalResponseDto.setActualReturnDate(LocalDate.of(2025, 5, 14));
-        expectedRentalResponseDto.setCarId(2L);
+        expectedRentalResponseDto.setCarId(3L);
         expectedRentalResponseDto.setActive(false);
 
         MvcResult result = mockMvc
                 .perform(post("/rentals/return")
-                        .param("id", "2")
+                        .param("id", "3")
                         .param("returnDate", "2025-05-14")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
