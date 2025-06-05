@@ -5,7 +5,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,12 +14,10 @@ class NotificationServiceImpl implements NotificationService {
     private static final Dotenv DOTENV = Dotenv.configure().filename(".env").load();
     private static final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
-    @Bean
     public String telegramBotToken() {
         return DOTENV.get("TELEGRAM_BOT_TOKEN");
     }
 
-    @Bean
     public String telegramChatId() {
         return DOTENV.get("TELEGRAM_CHAT_ID");
     }
